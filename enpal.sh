@@ -2,9 +2,11 @@
 
 # Zugangsdaten
 INFLUX_HOST="YOUR_INFLUX_HOST"
-INFLUX_ORG_ID="YOUR_INFLUX_ORG_ID";
+INFLUX_ORG_ID="YOUR_INFLUX_ORG_ID"
+INFLUX_BUCKET="YOUR_INFLUX_BUCKET"
 INFLUX_TOKEN="YOUR_INFLUX_TOKEN"
 INFLUX_API="${INFLUX_HOST}/api/v2/query?orgID=${INFLUX_ORG_ID}"
+QUERY_RANGE_START="-5m"
 
 case $1 in
 # Gesamtverbrauch
@@ -13,11 +15,12 @@ consumption)
     --header "Authorization: Token ${INFLUX_TOKEN}" \
     --header "Accept: application/json" \
     --header "Content-type: application/vnd.flux" \
-    --data 'from(bucket: "my-new-bucket") |> range(start: -15m)
-            |> filter(fn: (r) => r._measurement == "Gesamtleistung")
-            |> filter(fn: (r) => r["_field"] == "Verbrauch")
-            |> keep(columns: ["_value"])
-            |> last()') >/dev/null 2>&1
+    --data "from(bucket: \"$INFLUX_BUCKET\")
+            |> range(start: $QUERY_RANGE_START})
+            |> filter(fn: (r) => r._measurement == \"Gesamtleistung\")
+            |> filter(fn: (r) => r._field == \"Verbrauch\")
+            |> keep(columns: [\"_value\"])
+            |> last()") >/dev/null 2>&1
   var="${var##*,}"
   ;;
 # Netzbezug/Einspeisung
@@ -35,12 +38,12 @@ pv)
     --header "Authorization: Token ${INFLUX_TOKEN}" \
     --header "Accept: application/json" \
     --header "Content-type: application/vnd.flux" \
-    --data 'from(bucket: "my-new-bucket")
-            |> range(start: -15m)
-            |> filter(fn: (r) => r._measurement == "Gesamtleistung")
-            |> filter(fn: (r) => r["_field"] == "Produktion")
-            |> keep(columns: ["_value"])
-            |> last()') >/dev/null 2>&1
+    --data "from(bucket: \"$INFLUX_BUCKET\")
+            |> range(start: $QUERY_RANGE_START)
+            |> filter(fn: (r) => r._measurement == \"Gesamtleistung\")
+            |> filter(fn: (r) => r._field == \"Produktion\")
+            |> keep(columns: [\"_value\"])
+            |> last()") >/dev/null 2>&1
   var="${var##*,}"
   ;;
 # Kumulierte Solarproduktion
@@ -49,12 +52,12 @@ energy)
     --header "Authorization: Token ${INFLUX_TOKEN}" \
     --header "Accept: application/json" \
     --header "Content-type: application/vnd.flux" \
-    --data 'from(bucket: "my-new-bucket")
-            |> range(start: -15m)
-            |> filter(fn: (r) => r._measurement == "aggregated")
-            |> filter(fn: (r) => r["_field"] == "Produktion")
-            |> keep(columns: ["_value"])
-            |> last()') >/dev/null 2>&1
+    --data "from(bucket: \"$INFLUX_BUCKET\")
+            |> range(start: $QUERY_RANGE_START)
+            |> filter(fn: (r) => r._measurement == \"aggregated\")
+            |> filter(fn: (r) => r._field == \"Produktion\")
+            |> keep(columns: [\"_value\"])
+            |> last()") >/dev/null 2>&1
   var="${var##*,}"
   ;;
 # Aktuelle Produktion der Phasen 1 bis 3
@@ -69,36 +72,36 @@ phase)
         --header "Authorization: Token ${INFLUX_TOKEN}" \
         --header "Accept: application/json" \
         --header "Content-type: application/vnd.flux" \
-        --data 'from(bucket: "my-new-bucket")
-               |> range(start: -15m)
-               |> filter(fn: (r) => r._measurement == "phasePowerAc")
-               |> filter(fn: (r) => r["_field"] == "Phase1")
-               |> keep(columns: ["_value"])
-               |> last()') >/dev/null 2>&1
+        --data "from(bucket: \"$INFLUX_BUCKET\")
+               |> range(start: $QUERY_RANGE_START)
+               |> filter(fn: (r) => r._measurement == \"phasePowerAc\")
+               |> filter(fn: (r) => r._field == \"Phase1\")
+               |> keep(columns: [\"_value\"])
+               |> last()") >/dev/null 2>&1
       ;;
     2)
       var=$(curl --request POST "${INFLUX_API}" \
         --header "Authorization: Token ${INFLUX_TOKEN}" \
         --header "Accept: application/json" \
         --header "Content-type: application/vnd.flux" \
-        --data 'from(bucket: "my-new-bucket")
-                |> range(start: -15m)
-                |> filter(fn: (r) => r._measurement == "phasePowerAc")
-                |> filter(fn: (r) => r["_field"] == "Phase2")
-                |> keep(columns: ["_value"])
-                |> last()') >/dev/null 2>&1
+        --data "from(bucket: \"$INFLUX_BUCKET\")
+               |> range(start: $QUERY_RANGE_START)
+               |> filter(fn: (r) => r._measurement == \"phasePowerAc\")
+               |> filter(fn: (r) => r._field == \"Phase2\")
+               |> keep(columns: [\"_value\"])
+               |> last()") >/dev/null 2>&1
       ;;
     3)
       var=$(curl --request POST "${INFLUX_API}" \
         --header "Authorization: Token ${INFLUX_TOKEN}" \
         --header "Accept: application/json" \
         --header "Content-type: application/vnd.flux" \
-        --data 'from(bucket: "my-new-bucket")
-                |> range(start: -15m)
-                |> filter(fn: (r) => r._measurement == "phasePowerAc")
-                |> filter(fn: (r) => r["_field"] == "Phase3")
-                |> keep(columns: ["_value"])
-                |> last()') >/dev/null 2>&1
+        --data "from(bucket: \"$INFLUX_BUCKET\")
+               |> range(start: $QUERY_RANGE_START)
+               |> filter(fn: (r) => r._measurement == \"phasePowerAc\")
+               |> filter(fn: (r) => r._field == \"Phase3\")
+               |> keep(columns: [\"_value\"])
+               |> last()") >/dev/null 2>&1
       ;;
     *)
       echo >&2 "The phase number is invalid"
@@ -114,21 +117,21 @@ ac)
     --header "Authorization: Token ${INFLUX_TOKEN}" \
     --header "Accept: application/json" \
     --header "Content-type: application/vnd.flux" \
-    --data 'from(bucket: "my-new-bucket")
-           |> range(start: -15m)
-           |> filter(fn: (r) => r._measurement == "phasePowerAc")
-           |> filter(fn: (r) => r["_field"] == "Total")
-           |> keep(columns: ["_value"])
-           |> last()') >/dev/null 2>&1
+    --data "from(bucket: \"$INFLUX_BUCKET\")
+           |> range(start: $QUERY_RANGE_START)
+           |> filter(fn: (r) => r._measurement == \"phasePowerAc\")
+           |> filter(fn: (r) => r._field == \"Total\")
+           |> keep(columns: [\"_value\"])
+           |> last()") >/dev/null 2>&1
   var="${var##*,}"
   ;;
 # Batterieleistung
+# Die maximale Ladeleistung ist auf 5000W begrenzt, die maximale Entladeleistung auf -5000W. Dieser Wert kann/muss je nach Speicher angepasst werden.
 battery)
   pv=$(enpal pv)
   ac=$(enpal ac)
   # shellcheck disable=SC2004
   battery=$(($ac - $pv))
-
   if [ "$ac" -lt "$pv" ]; then
     echo 0
     exit 0
@@ -139,11 +142,13 @@ battery)
     echo 5000
     exit 0
   fi
-
   echo $battery
   exit 0
   ;;
-# Ladezustand der Batterie (bisher nur Schätzung möglich)
+# Ladezustand der Batterie (bisher nur 0%, 50% oder 100% möglich)
+# Momentan werden durch Enpal in der InfluxDB noch nicht die nötigen Daten bereitgestellt um den genauen Ladezustand bestimmen zu können.
+# Ist die Batterieleistung gleich 0 und die Solarproduktion größer als 0 kann davon ausgegangen werden, dass die Batterie zu 100% geladen ist. Beträgt
+# die Batterieleistung jedoch 0 und die Solarproduktion ebenso 0, ist die Batterie vollständig entladen. Alles dazwischen erhält aktuell den Wert 50%.
 soc)
   pv=$(enpal pv)
   battery=$(enpal battery)
@@ -156,6 +161,7 @@ soc)
   fi
   exit 0
   ;;
+# Kleine Gedankenstütze für die Konsole ;)
 help)
   echo consumption
   echo grid
@@ -175,9 +181,6 @@ esac
 
 # Filtern
 var=$(echo "$var" | xargs)
-
-#filter
-#var=$(echo $var | grep -oE '\w*[.]\w*')
 
 # Konvertierung zu Ganzzahl
 var="${var%.*}"
