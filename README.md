@@ -1,4 +1,4 @@
-# Enpal-InfluxDB-Anbindung für evcc
+# evcc / Einbindung einer gemieteten PV-Anlage von Enpal mittels InfluxDB
 Workaround für die evcc-Integration einer gemieteten PV-Anlage "Huawei SUN2000 with SDongle &amp; Power Sensor" von Enpal.
 
 Am 20. März 2023 hatte ich bei **evcc-io/evcc** auf GitHub eine [Diskussion](https://github.com/evcc-io/evcc/discussions/6965) bezüglich der Einbindung einer gemieteten PV-Anlage inkl. Speicher von Enpal gestellt. Allerdings stellte sich heraus, dass wohl niemand so recht etwas mit der Frage anzufangen wusste. Dazu muss man wissen, dass man bei einer gemieteten PV-Anlage von Enpal keinen Zugriff auf die Modbus-Schnittstelle erhält, man kann das System also nicht so einfach mittels [template](https://docs.evcc.io/docs/devices/meters#sun2000-with-sdongle--power-sensor) in die **evcc.yaml** einbinden.   
