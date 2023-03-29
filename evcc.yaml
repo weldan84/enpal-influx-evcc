@@ -1,0 +1,49 @@
+# Für weitere Konfigurationsmöglichkeiten siehe offizielle Referenz unter https://docs.evcc.io/docs/reference/configuration/
+site:
+  - title: Zuhause
+    meters:
+      grid: grid
+      pv:
+        - pv
+      battery:
+        - battery
+    residualPower: 100
+    bufferSoc: 60
+    prioritySoc: 40
+interval: 30s
+network:
+  schema: http
+  host: evcc.local
+  port: 7070
+levels:
+  site: debug
+  meters: debug
+  lp-1: debug
+meters:
+  - name: grid
+    type: custom
+    power:
+      source: script
+      cmd: enpal grid
+      timeout: 10s
+  - name: pv
+    type: custom
+    power:
+      source: script
+      cmd: enpal pv
+      timeout: 10s
+    energy:
+      source: script
+      cmd: enpal energy
+      timeout: 10s
+  - name: battery
+    type: custom
+    power:
+      source: script
+      cmd: enpal battery
+      timeout: 10s
+    soc:
+      source: script
+      cmd: enpal soc
+      timeout: 10s
+    capacity: 10

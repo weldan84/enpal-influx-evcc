@@ -32,7 +32,7 @@ grid)
   echo $(($consumption - $pv - $battery))
   exit 0
   ;;
-# Aktuelle Solarproduktion
+# Aktuelle Solarproduktion / DC-Erzeugungsleistung
 pv)
   var=$(curl --request POST "${INFLUX_API}" \
     --header "Authorization: Token ${INFLUX_TOKEN}" \
@@ -46,7 +46,7 @@ pv)
             |> last()") >/dev/null 2>&1
   var="${var##*,}"
   ;;
-# Kumulierte Solarproduktion
+# Kumulierte Solarproduktion / DC-Erzeugungsleistung
 energy)
   var=$(curl --request POST "${INFLUX_API}" \
     --header "Authorization: Token ${INFLUX_TOKEN}" \
@@ -147,8 +147,8 @@ battery)
   ;;
 # Ladezustand der Batterie (bisher nur 0%, 50% oder 100% möglich)
 # Momentan werden durch Enpal in der InfluxDB noch nicht die nötigen Daten bereitgestellt um den genauen Ladezustand bestimmen zu können.
-# Ist die Batterieleistung gleich 0 und die Solarproduktion größer als 0 kann davon ausgegangen werden, dass die Batterie zu 100% geladen ist. Beträgt
-# die Batterieleistung jedoch 0 und die Solarproduktion ebenso 0, ist die Batterie vollständig entladen. Alles dazwischen erhält aktuell den Wert 50%.
+# Ist die Batterieleistung gleich 0 und die DC-Erzeugungsleistung größer als 0 kann davon ausgegangen werden, dass die Batterie zu 100% geladen ist. Beträgt
+# die Batterieleistung jedoch 0 und die DC-Erzeugungsleistung ebenso 0, ist die Batterie vollständig entladen. Alles dazwischen erhält aktuell den Wert 50%.
 soc)
   pv=$(enpal pv)
   battery=$(enpal battery)
