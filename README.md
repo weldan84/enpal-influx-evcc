@@ -70,6 +70,6 @@ enpal grid
 
 Mit diesem Befehl sollte euch nun der aktuelle Netzbezug bzw. Einspeisung (mit einem negativen Wert) angezeigt werden
 
-Nun könnte ihr das [evcc-Plugin "script"](https://docs.evcc.io/docs/reference/plugins#shell-script-lesenschreiben) nutzen um eure Werte für grid, pv und battery weiterzuverarbeiten. Eine entsprechende Beispielkonfiguration der [evcc.yaml](https://github.com/weldan84/enpal-influx-evcc/blob/main/evcc.yaml) findet ihr ebenfalls [hier](https://github.com/weldan84/enpal-influx-evcc/blob/main/evcc.yaml) im Projektordner.
+Nun könnt ihr das [evcc-Plugin "script"](https://docs.evcc.io/docs/reference/plugins#shell-script-lesenschreiben) nutzen um eure Werte für grid, pv und battery weiterzuverarbeiten. Eine entsprechende Beispielkonfiguration der [evcc.yaml](https://github.com/weldan84/enpal-influx-evcc/blob/main/evcc.yaml) findet ihr ebenfalls [hier](https://github.com/weldan84/enpal-influx-evcc/blob/main/evcc.yaml) im Projektordner.
 
 Zu Schluss möchte ich noch anmerken, dass ich mich noch nicht so lange mit dem Projekt evcc beschäftige. Es kann somit durchaus sein, dass hier oder da noch ein paar Denkfehler auftauchen. In diesem Fall freue ich mich über euren Rat. Im Gegenzug freue ich mich natürlich auch über positives Feedback oder konstruktive Kritik und Verbesserungsvorschläge :)
