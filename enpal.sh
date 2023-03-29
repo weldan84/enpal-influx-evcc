@@ -16,7 +16,7 @@ consumption)
     --header "Accept: application/json" \
     --header "Content-type: application/vnd.flux" \
     --data "from(bucket: \"$INFLUX_BUCKET\")
-            |> range(start: $QUERY_RANGE_START})
+            |> range(start: $QUERY_RANGE_START)
             |> filter(fn: (r) => r._measurement == \"Gesamtleistung\")
             |> filter(fn: (r) => r._field == \"Verbrauch\")
             |> keep(columns: [\"_value\"])
