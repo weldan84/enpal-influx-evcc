@@ -57,7 +57,7 @@ Natürlich könnt ihr auch noch alle anderen Abfragen testen bevor ihr mit der E
 sh enpal.sh help
 ````
 
-Um das Script nun global bekannt zu machen, verschieben wir es in das bin-Verzeichnis und machen das Script ausführbar 
+Um das Script nun global bekannt zu machen, verschieben wir es in das bin-Verzeichnis und machen es ausführbar 
 ````shell
 sudo mv enpal.sh /usr/bin/enpal
 sudo chmod +x /usr/bin/enpal
