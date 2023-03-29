@@ -179,9 +179,6 @@ help)
   ;;
 esac
 
-# Filtern
-var=$(echo "$var" | xargs)
-
-# Konvertierung zu Ganzzahl
+# Konvertierung
 var="${var%.*}"
 echo $((var))
