@@ -187,4 +187,4 @@ esac
 # Konvertierung
 var="${var%.*}"
 echo $((var))
-exit $status
+exit "$status"
