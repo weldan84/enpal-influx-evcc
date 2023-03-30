@@ -11,7 +11,7 @@ QUERY_RANGE_START="-5m"
 case $1 in
 # Gesamtverbrauch
 consumption)
-  var=$(curl --request POST "${INFLUX_API}" \
+  var=$(curl -f -s "${INFLUX_API}" \
     --header "Authorization: Token ${INFLUX_TOKEN}" \
     --header "Accept: application/json" \
     --header "Content-type: application/vnd.flux" \
@@ -20,7 +20,8 @@ consumption)
             |> filter(fn: (r) => r._measurement == \"Gesamtleistung\")
             |> filter(fn: (r) => r._field == \"Verbrauch\")
             |> keep(columns: [\"_value\"])
-            |> last()") >/dev/null 2>&1
+            |> last()")
+  status="$?"
   var="${var##*,}"
   ;;
 # Netzbezug/Einspeisung
@@ -34,7 +35,7 @@ grid)
   ;;
 # Aktuelle Solarproduktion / DC-Erzeugungsleistung
 pv)
-  var=$(curl --request POST "${INFLUX_API}" \
+  var=$(curl -f -s "${INFLUX_API}" \
     --header "Authorization: Token ${INFLUX_TOKEN}" \
     --header "Accept: application/json" \
     --header "Content-type: application/vnd.flux" \
@@ -43,12 +44,13 @@ pv)
             |> filter(fn: (r) => r._measurement == \"Gesamtleistung\")
             |> filter(fn: (r) => r._field == \"Produktion\")
             |> keep(columns: [\"_value\"])
-            |> last()") >/dev/null 2>&1
+            |> last()")
+  status="$?"
   var="${var##*,}"
   ;;
 # Kumulierte Solarproduktion / DC-Erzeugungsleistung
 energy)
-  var=$(curl --request POST "${INFLUX_API}" \
+  var=$(curl -f -s "${INFLUX_API}" \
     --header "Authorization: Token ${INFLUX_TOKEN}" \
     --header "Accept: application/json" \
     --header "Content-type: application/vnd.flux" \
@@ -57,7 +59,8 @@ energy)
             |> filter(fn: (r) => r._measurement == \"aggregated\")
             |> filter(fn: (r) => r._field == \"Produktion\")
             |> keep(columns: [\"_value\"])
-            |> last()") >/dev/null 2>&1
+            |> last()")
+  status="$?"
   var="${var##*,}"
   ;;
 # Aktuelle Produktion der Phasen 1 bis 3
@@ -68,7 +71,7 @@ phase)
   else
     case $2 in
     1)
-      var=$(curl --request POST "${INFLUX_API}" \
+      var=$(curl -f -s "${INFLUX_API}" \
         --header "Authorization: Token ${INFLUX_TOKEN}" \
         --header "Accept: application/json" \
         --header "Content-type: application/vnd.flux" \
@@ -77,10 +80,10 @@ phase)
                |> filter(fn: (r) => r._measurement == \"phasePowerAc\")
                |> filter(fn: (r) => r._field == \"Phase1\")
                |> keep(columns: [\"_value\"])
-               |> last()") >/dev/null 2>&1
+               |> last()")
       ;;
     2)
-      var=$(curl --request POST "${INFLUX_API}" \
+      var=$(curl -f -s "${INFLUX_API}" \
         --header "Authorization: Token ${INFLUX_TOKEN}" \
         --header "Accept: application/json" \
         --header "Content-type: application/vnd.flux" \
@@ -89,10 +92,10 @@ phase)
                |> filter(fn: (r) => r._measurement == \"phasePowerAc\")
                |> filter(fn: (r) => r._field == \"Phase2\")
                |> keep(columns: [\"_value\"])
-               |> last()") >/dev/null 2>&1
+               |> last()")
       ;;
     3)
-      var=$(curl --request POST "${INFLUX_API}" \
+      var=$(curl -f -s "${INFLUX_API}" \
         --header "Authorization: Token ${INFLUX_TOKEN}" \
         --header "Accept: application/json" \
         --header "Content-type: application/vnd.flux" \
@@ -101,19 +104,20 @@ phase)
                |> filter(fn: (r) => r._measurement == \"phasePowerAc\")
                |> filter(fn: (r) => r._field == \"Phase3\")
                |> keep(columns: [\"_value\"])
-               |> last()") >/dev/null 2>&1
+               |> last()")
       ;;
     *)
       echo >&2 "The phase number is invalid"
       exit 1
       ;;
     esac
+    status="$?"
     var="${var##*,}"
   fi
   ;;
 # Wechselstromleistung
 ac)
-  var=$(curl --request POST "${INFLUX_API}" \
+  var=$(curl -f -s "${INFLUX_API}" \
     --header "Authorization: Token ${INFLUX_TOKEN}" \
     --header "Accept: application/json" \
     --header "Content-type: application/vnd.flux" \
@@ -122,7 +126,8 @@ ac)
            |> filter(fn: (r) => r._measurement == \"phasePowerAc\")
            |> filter(fn: (r) => r._field == \"Total\")
            |> keep(columns: [\"_value\"])
-           |> last()") >/dev/null 2>&1
+           |> last()")
+  status="$?"
   var="${var##*,}"
   ;;
 # Batterieleistung
@@ -182,3 +187,4 @@ esac
 # Konvertierung
 var="${var%.*}"
 echo $((var))
+exit $status
