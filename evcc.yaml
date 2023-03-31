@@ -2,7 +2,7 @@
 site:
   - title: Zuhause
     meters:
-      grid: grid
+      grid: grid_enpal #grid_powerfox optional
       pv:
         - pv
       battery:
@@ -20,11 +20,17 @@ levels:
   meters: debug
   lp-1: debug
 meters:
-  - name: grid
+  - name: grid_enpal
     type: custom
     power:
       source: script
-      cmd: enpal grid
+      cmd: enpal grid_enpal
+      timeout: 10s
+  - name: grid_powerfox #optional
+    type: custom
+    power:
+      source: script
+      cmd: enpal grid_powerfox
       timeout: 10s
   - name: pv
     type: custom
